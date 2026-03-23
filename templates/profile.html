@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-header mb-4">
+    <h2 class="section-title">User Profile</h2>
+</div>
+
+<div class="grid-cards" style="grid-template-columns: 1fr 2fr;">
+    <!-- Profile Card -->
+    <div class="glass-panel" style="text-align:center;">
+        <div class="profile-pic" style="margin-bottom:1rem; position:relative; display:inline-block;">
+            <img src="{{ url_for('static', filename='images/' + current_user.profile_picture) if current_user.profile_picture else 'https://ui-avatars.com/api/?name=' + current_user.full_name.replace(' ', '+') + '&size=150' }}" alt="Profile" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid var(--primary-color);">
+            <button class="icon-btn" style="position:absolute; bottom:0; right:0; background:var(--primary-color); color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2);"><i class="fa-solid fa-camera"></i></button>
+        </div>
+        <h3 style="margin-bottom:5px;">{{ current_user.full_name }}</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;">Account: {{ current_user.account_number }}</p>
+        
+        <hr style="border:none; border-top:1px solid var(--glass-border); margin:1.5rem 0;">
+        
+        <div style="text-align:left;">
+            <p style="margin-bottom:10px; font-size:0.9rem;"><i class="fa-solid fa-envelope" style="color:var(--primary-color); width:20px;"></i> {{ current_user.email }}</p>
+            <p style="margin-bottom:10px; font-size:0.9rem;"><i class="fa-solid fa-phone" style="color:var(--primary-color); width:20px;"></i> {{ current_user.phone }}</p>
+            <p style="font-size:0.9rem;"><i class="fa-solid fa-building-columns" style="color:var(--primary-color); width:20px;"></i> Joined: 2023</p>
+        </div>
+    </div>
+    
+    <!-- Edit Profile Form -->
+    <div class="glass-panel">
+        <h3 class="section-title">Edit Details</h3>
+        <form method="POST" action="{{ url_for('profile') }}">
+            <div class="grid-cards" style="gap:1rem; margin-bottom:0;">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" class="form-control" value="{{ current_user.full_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" class="form-control" value="{{ current_user.phone }}" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Email Address <span style="font-size:0.8rem; color:var(--text-muted);">(Cannot be changed)</span></label>
+                <input type="email" class="form-control" value="{{ current_user.email }}" readonly style="opacity:0.7; cursor:not-allowed;">
+            </div>
+            
+            <div class="form-group">
+                <label>Account Number <span style="font-size:0.8rem; color:var(--text-muted);">(Assigned by Bank)</span></label>
+                <input type="text" class="form-control" value="{{ current_user.account_number }}" readonly style="opacity:0.7; cursor:not-allowed;">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width:auto; margin-top:10px;">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

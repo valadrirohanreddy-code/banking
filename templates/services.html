@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-header mb-4">
+    <h2 class="section-title">Utility Services</h2>
+</div>
+
+<div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    
+    <!-- Bill Payments -->
+    <div class="glass-panel">
+        <h3 class="section-title" style="display:flex; align-items:center; gap:10px;">
+            <i class="fa-solid fa-bolt" style="color:var(--warning);"></i> Pay Bills
+        </h3>
+        <form method="POST" action="{{ url_for('services') }}">
+            <input type="hidden" name="service_type" value="utility_bill">
+            <div class="form-group">
+                <label>Provider</label>
+                <select class="form-control" name="provider">
+                    <option>Electricity Board</option>
+                    <option>Water Authority</option>
+                    <option>Internet / Broadband</option>
+                    <option>Gas Pipeline</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Consumer Number</label>
+                <input type="text" class="form-control" required placeholder="Enter Consumer ID">
+            </div>
+            <div class="form-group">
+                <label>Amount ($)</label>
+                <input type="number" name="amount" class="form-control" step="0.01" min="1" required placeholder="0.00">
+            </div>
+            <button type="submit" class="btn btn-primary" style="background:linear-gradient(to right, #f59e0b, #d97706);"><i class="fa-solid fa-credit-card"></i> Pay Now</button>
+        </form>
+    </div>
+
+    <!-- Mobile Recharge -->
+    <div class="glass-panel">
+        <h3 class="section-title" style="display:flex; align-items:center; gap:10px;">
+            <i class="fa-solid fa-mobile-screen" style="color:var(--info);"></i> Mobile Recharge
+        </h3>
+        <form method="POST" action="{{ url_for('services') }}">
+            <input type="hidden" name="service_type" value="mobile_recharge">
+            <div class="form-group" style="display:flex; gap:10px; margin-bottom:15px;">
+                <label style="display:flex; align-items:center; gap:5px; font-weight:normal;">
+                    <input type="radio" name="plan_type" value="prepaid" checked> Prepaid
+                </label>
+                <label style="display:flex; align-items:center; gap:5px; font-weight:normal;">
+                    <input type="radio" name="plan_type" value="postpaid"> Postpaid
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="tel" class="form-control" required placeholder="+1 XXX XXX XXXX">
+            </div>
+            <div class="form-group">
+                <label>Operator</label>
+                <select class="form-control">
+                    <option>AT&T</option>
+                    <option>Verizon</option>
+                    <option>T-Mobile</option>
+                    <option>Sprint</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Amount ($)</label>
+                <input type="number" name="amount" class="form-control" step="0.01" min="1" required placeholder="0.00">
+            </div>
+            <button type="submit" class="btn btn-primary" style="background:linear-gradient(to right, #3b82f6, #2563eb);"><i class="fa-solid fa-bolt"></i> Recharge Instantly</button>
+        </form>
+    </div>
+
+    <!-- Ticket Booking -->
+    <div class="glass-panel">
+        <h3 class="section-title" style="display:flex; align-items:center; gap:10px;">
+            <i class="fa-solid fa-ticket" style="color:var(--secondary-color);"></i> Book Tickets
+        </h3>
+        <form method="POST" action="{{ url_for('services') }}">
+            <input type="hidden" name="service_type" value="ticket_booking">
+            <div class="form-group">
+                <label>Travel Type</label>
+                <select class="form-control">
+                    <option>Flight</option>
+                    <option>Train</option>
+                    <option>Bus</option>
+                    <option>Movie</option>
+                </select>
+            </div>
+            <div class="grid-cards" style="gap:10px; margin-bottom:0px;">
+                <div class="form-group">
+                    <label>From</label>
+                    <input type="text" class="form-control" required placeholder="City">
+                </div>
+                <div class="form-group">
+                    <label>To</label>
+                    <input type="text" class="form-control" required placeholder="City">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Booking Amount ($)</label>
+                <input type="number" name="amount" class="form-control" step="0.01" min="1" required placeholder="0.00">
+            </div>
+            <button type="submit" class="btn btn-primary" style="background:linear-gradient(to right, #8b5cf6, #7c3aed);"><i class="fa-solid fa-check"></i> Confirm Booking</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

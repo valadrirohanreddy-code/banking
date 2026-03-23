@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-header mb-4">
+    <h2 class="section-title">Credit Health (CIBIL)</h2>
+</div>
+
+<div class="grid-cards" style="grid-template-columns: 1fr 1fr;">
+    <!-- Gauge Meter Card -->
+    <div class="glass-panel" style="text-align:center;">
+        <h3 class="section-title">Your Credit Score</h3>
+        
+        <div style="position:relative; width:250px; height:125px; margin:20px auto; overflow:hidden;">
+            <!-- CSS Semi-circle Gauge -->
+            <div id="gauge-bg" style="position:absolute; width:250px; height:250px; border-radius:50%; background:rgba(0,0,0,0.1); border:25px solid rgba(200,200,200,0.2); box-sizing:border-box;"></div>
+            <div id="gauge-fill" style="position:absolute; width:250px; height:250px; border-radius:50%; border:25px solid transparent; border-top-color:var(--success); border-right-color:var(--success); box-sizing:border-box; transform:rotate(-45deg); transition:transform 1.5s ease-out;"></div>
+            
+            <div style="position:absolute; bottom:0; width:100%; text-align:center;">
+                <h2 style="font-size:3rem; line-height:1; color:var(--text-main);" id="score-display">0</h2>
+                <div style="font-size:0.9rem; color:var(--success); font-weight:600;" id="score-status">Excellent</div>
+            </div>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; width:250px; margin:0 auto; font-size:0.8rem; color:var(--text-muted);">
+            <span>300</span>
+            <span>900</span>
+        </div>
+        
+        <p style="margin-top:20px; font-size:0.9rem; color:var(--text-muted);">Last updated: Today</p>
+    </div>
+    
+    <!-- Tips / Insights -->
+    <div class="glass-panel">
+        <h3 class="section-title">Credit Insights</h3>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1.5rem;">Your credit score is higher than 85% of other users. Keep up the good work!</p>
+        
+        <div style="display:flex; flex-direction:column; gap:15px;">
+            <div style="display:flex; gap:15px; padding:15px; background:rgba(16, 185, 129, 0.05); border:1px solid rgba(16, 185, 129, 0.2); border-radius:12px;">
+                <div style="color:var(--success); font-size:1.5rem;"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <h4 style="margin-bottom:5px; font-size:1rem;">On-time Payments</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">100% of your payments are on time.</p>
+                </div>
+            </div>
+            
+            <div style="display:flex; gap:15px; padding:15px; background:rgba(59, 130, 246, 0.05); border:1px solid rgba(59, 130, 246, 0.2); border-radius:12px;">
+                <div style="color:var(--info); font-size:1.5rem;"><i class="fa-solid fa-chart-pie"></i></div>
+                <div>
+                    <h4 style="margin-bottom:5px; font-size:1rem;">Low Credit Utilization</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">You are using only 12% of your available limits.</p>
+                </div>
+            </div>
+            
+            <div style="display:flex; gap:15px; padding:15px; background:rgba(245, 158, 11, 0.05); border:1px solid rgba(245, 158, 11, 0.2); border-radius:12px;">
+                <div style="color:var(--warning); font-size:1.5rem;"><i class="fa-solid fa-lightbulb"></i></div>
+                <div>
+                    <h4 style="margin-bottom:5px; font-size:1rem;">Tip to Improve</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Avoid opening too many new accounts in a short period.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const score = {{ current_user.cibil_score | default(750) }};
+        const minScore = 300;
+        const maxScore = 900;
+        
+        let percent = ((score - minScore) / (maxScore - minScore));
+        if(percent < 0) percent = 0;
+        if(percent > 1) percent = 1;
+        
+        const startDeg = -45;
+        const targetDeg = startDeg + (percent * 180);
+        
+        let status = 'Poor';
+        let color = 'var(--danger)';
+        if(score >= 750) { status = 'Excellent'; color = 'var(--success)'; }
+        else if(score >= 650) { status = 'Good'; color = 'var(--info)'; }
+        else if(score >= 550) { status = 'Average'; color = 'var(--warning)'; }
+        
+        setTimeout(() => {
+            const fill = document.getElementById('gauge-fill');
+            fill.style.transform = `rotate(${targetDeg}deg)`;
+            fill.style.borderTopColor = color;
+            fill.style.borderRightColor = color;
+            
+            const statusEl = document.getElementById('score-status');
+            statusEl.innerText = status;
+            statusEl.style.color = color;
+        }, 300);
+        
+        const display = document.getElementById('score-display');
+        let currentIter = minScore;
+        const duration = 1500;
+        const frames = 60;
+        const inc = (score - minScore) / frames;
+        
+        const counter = setInterval(() => {
+            currentIter += inc;
+            if(currentIter >= score) {
+                currentIter = score;
+                clearInterval(counter);
+            }
+            display.innerText = Math.floor(currentIter);
+        }, duration/frames);
+    });
+</script>
+{% endblock %}

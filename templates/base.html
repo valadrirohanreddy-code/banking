@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModernBank</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="light-mode">
+    <div class="app-container">
+        {% if 'user_id' in session %}
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-building-columns"></i>
+                <span>ModernBank</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('transactions') }}"><i class="fa-solid fa-money-bill-transfer"></i> Transactions</a></li>
+                <li><a href="{{ url_for('send_money') }}"><i class="fa-solid fa-paper-plane"></i> Send Money</a></li>
+                <li><a href="{{ url_for('services') }}"><i class="fa-solid fa-layer-group"></i> Services</a></li>
+                <li><a href="{{ url_for('cibil') }}"><i class="fa-solid fa-gauge-high"></i> CIBIL Score</a></li>
+                <li><a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a></li>
+                <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+
+        <main class="main-content">
+            {% if 'user_id' in session %}
+            <!-- Topbar (Only when logged in) -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Search transactions...">
+                </div>
+                <div class="user-actions">
+                    <button id="theme-toggle" class="icon-btn theme-btn"><i class="fa-solid fa-moon"></i></button>
+                    <div class="notification-icon icon-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="user-profile-sm">
+                        <img src="{{ url_for('static', filename='images/' + current_user.profile_picture) if current_user.profile_picture else 'https://ui-avatars.com/api/?name=' + current_user.full_name.replace(' ', '+') }}" alt="User">
+                        <span>{{ current_user.full_name.split()[0] }}</span>
+                    </div>
+                </div>
+            </header>
+            {% endif %}
+
+            <!-- Flash Messages -->
+            <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-alert flash-{{ category }}">
+                                <i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %}"></i>
+                                <span>{{ message }}</span>
+                                <button class="close-alert">&times;</button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-wrapper {% if 'user_id' not in session %}auth-wrapper{% endif %}">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

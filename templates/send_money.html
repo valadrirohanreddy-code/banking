@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-header mb-4">
+    <h2 class="section-title">Send Money</h2>
+</div>
+
+<div class="grid-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="glass-panel">
+        <h3 class="section-title">Transfer Funds</h3>
+        <form method="POST" action="{{ url_for('send_money') }}">
+            <div class="form-group">
+                <label for="account_number">Recipient Account Number (or UPI ID)</label>
+                <div style="position:relative;">
+                    <i class="fa-solid fa-building-columns" style="position:absolute; left:15px; top:14px; color:var(--text-muted);"></i>
+                    <input type="text" id="account_number" name="account_number" class="form-control" style="padding-left:45px;" required placeholder="Enter 10-digit account number">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="amount">Amount ($)</label>
+                <div style="position:relative;">
+                    <i class="fa-solid fa-dollar-sign" style="position:absolute; left:15px; top:14px; color:var(--text-muted);"></i>
+                    <input type="number" id="amount" name="amount" step="0.01" min="1" class="form-control" style="padding-left:45px;" required placeholder="0.00">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="margin-top:10px;"><i class="fa-solid fa-paper-plane"></i> Send Securely</button>
+        </form>
+    </div>
+    
+    <div class="glass-panel" style="background:linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color:white;">
+        <h3 style="margin-bottom:15px; font-weight:600;"><i class="fa-solid fa-wallet"></i> Your Wallet</h3>
+        <p style="opacity:0.9; font-size:0.9rem; margin-bottom:5px;">Available Balance</p>
+        <h2 style="font-size:2.5rem; margin-bottom:20px;">{{ current_user.balance | currency }}</h2>
+        
+        <div style="background:rgba(0,0,0,0.2); padding:15px; border-radius:12px;">
+            <p style="font-size:0.85rem; margin-bottom:10px; opacity:0.9;"><i class="fa-solid fa-shield-halved"></i> 100% Secure Transfer</p>
+            <p style="font-size:0.85rem; margin-bottom:10px; opacity:0.9;"><i class="fa-solid fa-bolt"></i> Instant Settlement</p>
+            <p style="font-size:0.85rem; opacity:0.9;"><i class="fa-solid fa-bell"></i> SMS Alerts Enabled</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

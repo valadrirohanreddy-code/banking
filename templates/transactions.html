@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-header mb-4" style="display:flex; justify-content:space-between; align-items:center;">
+    <h2 class="section-title" style="margin:0;">Transaction History</h2>
+    
+    <!-- Filters -->
+    <form method="GET" action="{{ url_for('transactions') }}" style="display:flex; gap:10px;">
+        <select name="type" class="form-control" style="width:150px; padding:8px 12px;" onchange="this.form.submit()">
+            <option value="all" {% if filter == 'all' %}selected{% endif %}>All Transactions</option>
+            <option value="credit" {% if filter == 'credit' %}selected{% endif %}>Credits Only</option>
+            <option value="debit" {% if filter == 'debit' %}selected{% endif %}>Debits Only</option>
+        </select>
+    </form>
+</div>
+
+<div class="glass-panel" style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; min-width:600px;">
+        <thead>
+            <tr style="border-bottom:1px solid var(--glass-border); text-align:left;">
+                <th style="padding:12px; color:var(--text-muted); font-weight:500;">Type/ID</th>
+                <th style="padding:12px; color:var(--text-muted); font-weight:500;">Date & Time</th>
+                <th style="padding:12px; color:var(--text-muted); font-weight:500;">Status</th>
+                <th style="padding:12px; color:var(--text-muted); font-weight:500; text-align:right;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tx in transactions %}
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05); transition:background 0.2s;">
+                <td style="padding:16px 12px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        {% set is_sender = tx.flow_type == 'debit' %}
+                        {% set color_class = 'danger' if is_sender else 'success' %}
+                        {% set icon = 'fa-arrow-up' if is_sender else 'fa-arrow-down' %}
+                        
+                        <div style="background:rgba(var(--{{color_class}}-rgb, 128,128,128), 0.1); color:var(--{{color_class}}); width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid {{icon}}"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;">{{ tx.type.replace('_', ' ').title() }}</div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">TXN ID: #{{ tx.id }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td style="padding:16px 12px; font-size:0.9rem;">
+                    {{ tx.timestamp | datetime }}
+                </td>
+                <td style="padding:16px 12px;">
+                    <span style="background:rgba(16, 185, 129, 0.1); color:var(--success); padding:4px 10px; border-radius:12px; font-size:0.8rem; font-weight:600;">Completed</span>
+                </td>
+                <td style="padding:16px 12px; text-align:right; font-weight:700; color:var(--{{color_class}});">
+                    {{ '-' if is_sender else '+' }}{{ tx.amount | currency }}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">
+                    No transactions found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .dark-mode tbody tr:hover { background: rgba(0,0,0,0.1); }
+</style>
+{% endblock %}

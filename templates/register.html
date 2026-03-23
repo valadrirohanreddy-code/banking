@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-box glass-panel" style="max-width: 600px;">
+    <h2>Join ModernBank</h2>
+    <p>Create your secure banking account today</p>
+    
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="grid-cards" style="gap:1rem; margin-bottom:0;">
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" class="form-control" required placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" required placeholder="john@example.com">
+            </div>
+        </div>
+
+        <div class="grid-cards" style="gap:1rem; margin-bottom:0;">
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="form-control" required placeholder="+1 234 567 8900">
+            </div>
+            <div class="form-group">
+                <label for="account_number">Desired Account Number</label>
+                <input type="text" id="account_number" name="account_number" class="form-control" required placeholder="10-digit number" pattern="\d{10}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" required placeholder="Create a strong password">
+            <i class="fa-solid fa-eye password-toggle"></i>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required placeholder="Confirm your password">
+            <i class="fa-solid fa-eye password-toggle"></i>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
+    
+    <div class="auth-footer">
+        Already have an account? <a href="{{ url_for('login') }}">Sign in to your account</a>
+    </div>
+</div>
+{% endblock %}
